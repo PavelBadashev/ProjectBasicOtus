@@ -15,7 +15,6 @@ import java.util.List;
 
 public class MainTest {
     WebDriver driver;
-    private static final Logger logger = LogManager.getLogger(MainTest.class);
 
     // Перед каждым шагом сетапится драйвер
     @BeforeEach

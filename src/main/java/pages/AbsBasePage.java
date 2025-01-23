@@ -13,8 +13,7 @@ public abstract class AbsBasePage {
         this.driver = driver;
     }
 
-    public AbsBasePage open(){
+    public void open(){
             driver.get(Utils.getUrl());
-            return this;
     }
 }

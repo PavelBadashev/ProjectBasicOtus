@@ -17,20 +17,17 @@ public class DriverFactory {
         String browserType = Utils.getBrowser();
         switch (browserType.toLowerCase()) {
             case "chrome":
-                ChromeOptions chromeOptions = new ChromeOptions();
                 WebDriverManager.chromedriver().setup();
                 driver = new ChromeDriver();
                 driver.manage().window().maximize();
                 break;
 
             case "firefox":
-                FirefoxOptions fireFoxOption = new FirefoxOptions();
                 WebDriverManager.firefoxdriver().setup();
                 driver = new FirefoxDriver();
                 break;
 
             case "edge":
-                EdgeOptions edgeOption = new EdgeOptions();
                 WebDriverManager.edgedriver().setup();
                 driver = new EdgeDriver();
                 break;

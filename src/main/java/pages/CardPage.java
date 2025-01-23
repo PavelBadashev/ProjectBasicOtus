@@ -23,8 +23,6 @@ public class CardPage extends AbsBasePage {
     }
 
     public boolean checkCardInfo() {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-
         logger.info("Поиск наименования курса");
         String name = driver.findElement(nameLocation).getText();
         if (name == null || name.isEmpty()) {

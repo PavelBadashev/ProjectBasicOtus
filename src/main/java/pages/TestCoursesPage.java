@@ -70,7 +70,6 @@ public class TestCoursesPage extends AbsBasePage{
     }
 
     public void openCard(WebElement card) {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
         logger.info("Переход на страницу с информацией по картчоке");
         card.click();
     }

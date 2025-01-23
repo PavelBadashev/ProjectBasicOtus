@@ -1,13 +1,11 @@
 package pages;
 
 import com.ibm.icu.text.SimpleDateFormat;
-import com.ibm.icu.util.ULocale;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.text.ParseException;
@@ -94,8 +92,6 @@ public class EventsPage extends AbsBasePage {
     }
 
     public void clickEventsFilter(String filter) {
-        WebDriverWait wait = new WebDriverWait(driver, 5);
-
         logger.info("Поиск дродауна с мероприятиями");
         driver.findElement(eventsLocation).click();
 
