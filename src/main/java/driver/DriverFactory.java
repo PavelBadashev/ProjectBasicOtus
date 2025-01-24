@@ -12,7 +12,6 @@ public class DriverFactory {
 
     public WebDriver getDriver() {
         String browserType = Utils.getBrowser();
-        String windowMode = Utils.getWindowMode().toLowerCase();
 
         switch (browserType.toLowerCase()) {
             case "chrome":
