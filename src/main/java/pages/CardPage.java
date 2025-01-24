@@ -77,8 +77,5 @@ public class CardPage extends AbsBasePage {
 
         logger.info("Поиск формата курса");
         checkCardFormat(generalInfo);
-
-        // Возврат на страницу с карточками
-        driver.navigate().back();
     }
 }
