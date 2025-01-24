@@ -13,45 +13,37 @@ public class MainPage extends AbsBasePage{
     private final By buttonStudingLocation = By.cssSelector("span[title='Обучение']");
 
     // Локатор курса "Тестирование" в меню "Обучение"
-    private final By buttonTestingLocation = By.cssSelector(
-            "a.sc-1pgqitk-0.dNitgt[href=\"https://otus.ru/categories/testing\"]"
-    );
+    private final By buttonTestingLocation = By.cssSelector("a[href*='/categories/testing']");
 
     // Локатор события "Календарь мероприятий" в меню "Обучение"
-    private final By buttonCalendarLocation = By.cssSelector(
-            "a.sc-1pgqitk-0.dNitgt[href=\"https://otus.ru/events/near\"]"
-    );
+    private final By buttonCalendarLocation = By.cssSelector("[href=\"https://otus.ru/events/near\"]");
+
+    Actions actions = new Actions(driver);
+    WebDriverWait wait = new WebDriverWait(driver, 10);
 
     public MainPage(WebDriver driver) {
         super(driver);
     }
 
     public MainPage clickTrainingMenu() {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-
-        // Создание объекта Actions для совершения действий на странице
-        Actions action = new Actions(driver);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(buttonStudingLocation));
-
         logger.info("Поиск меню 'Обучение'");
         WebElement studingElement = driver.findElement(buttonStudingLocation);
 
         logger.info("Наведение курсора на 'Обучение'");
-        action.moveToElement(studingElement).perform();
+        actions.moveToElement(studingElement).perform();
+
         return this;
     }
 
     public void clickTestingSection(){
-        WebDriverWait wait = new WebDriverWait(driver, 10);
         logger.info("Нажатие на раздел 'Тестирование'");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(buttonTestingLocation));
         driver.findElement(buttonTestingLocation).click();
     }
 
     public void clickCalendarSection(){
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        logger.info("Нажатие на раздел 'Календарь событий'");
+        logger.info("Нажатие на раздел 'Календарь мероприятий'");
         wait.until(ExpectedConditions.visibilityOfElementLocated(buttonCalendarLocation));
         driver.findElement(buttonCalendarLocation).click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(buttonCalendarLocation));
     }
 }

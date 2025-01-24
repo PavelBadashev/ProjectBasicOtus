@@ -1,15 +1,16 @@
 package config;
 
-import java.util.Properties;
-
 public class Utils {
-    private static final Properties properties = new Properties();
 
     public static String getUrl() {
-        return properties.getProperty("url", "https://otus.ru/");
+        return System.getProperty("url", "https://otus.ru/");
     }
 
     public static String getBrowser() {
-        return properties.getProperty("browser", "chrome");
+        return System.getProperty("browser", "chrome");
+    }
+
+    public static String getWindowMode() {
+        return System.getProperty("window.mode", "maximize");
     }
 }

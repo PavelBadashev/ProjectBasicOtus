@@ -1,10 +1,12 @@
 package pages;
 
 import com.ibm.icu.text.SimpleDateFormat;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,18 +16,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class EventsPage extends AbsBasePage {
 
-    private final By eventsArrayLocation = By.cssSelector("a[href^=\"https://otus.ru/lessons\"]\n");
-    private final By loaderLocation = By.cssSelector("[class=\"dod_new-loader\"]");
-    private final By eventsLocation = By.xpath(
-            "/html/body/div[2]/div/div[1]/div/section/header/div[1]/div/div[1]/span"
-    );
-    private final By webinarItemLocation = By.xpath(
-            "/html/body/div[2]/div/div[1]/div/section/header/div[1]/div/div[2]/a[4]"
-    );
+    private final By eventsArrayLocation = By.cssSelector("[class=\"dod_new-event-content\"]");
+    private final By eventsLocation = By.cssSelector("[class=\"dod_new-events-dropdown__input-arrow\"]");
+    private final By webinarItemLocation = By.cssSelector("a[href='/events/near/open_lesson/']");
     private final By eventDateLocation = By.cssSelector("[class=\"dod_new-event__date-text\"]");
     private final By eventTypeLocation = By.cssSelector("[class=\"dod_new-type__text\"]");
 
@@ -33,100 +29,77 @@ public class EventsPage extends AbsBasePage {
         super(driver);
     }
 
-    public boolean validateDate(String dateInput) {
+    public void validateDate(String dateInput) {
         LocalDate today = LocalDate.now();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM", new Locale("ru"));
         String todateDateString = today.format(formatter);
 
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd MMMM", new Locale("ru"));
+
         Date inputDate = null;
+        Date todayDate = null;
 
         try {
             inputDate = inputDateFormat.parse(dateInput);
-        } catch (ParseException e) {
-            logger.error(e);
-        }
-
-        Date todayDate = null;
-        try {
             todayDate = inputDateFormat.parse(todateDateString);
         } catch (ParseException e) {
-            logger.error(e);
+            logger.error("Ошибка при парсинге даты: " + e);
         }
 
-        // Сравниваем даты
-        if (inputDate != null && todayDate != null) {
-            if (inputDate.before(todayDate)) {
-                logger.error("Даты не совпадают. {} <> {}", inputDate, inputDate);
-                return false;
-            }
-        } else {
-            logger.error("Ошибка при преобразовании дат.");
-            return false;
-        }
-        return true;
+        // Сравнение даты
+        Assertions.assertTrue(inputDate != null && todayDate != null, "Ошибка при преобразовании дат");
+        Assertions.assertFalse(inputDate.before(todayDate), "Даты не совпадают");
     }
 
     public void scrollDown() {
-        WebDriverWait wait = new WebDriverWait(driver, 5);
-
-        // Инициализация JavascriptExecutor для выполнения скролла по странице
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        while (true) {
-            // Прокрутка в самый низ страницы
+        long initialHeight;
+        long currentHeight;
+
+        do {
+            // Запоминаем текущую высоту страницы
+            initialHeight = (long) js.executeScript("return document.body.scrollHeight");
+
+            // Скролл вниз
             js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
-            logger.info("Поиск дополнительных событий...");
-            try {
-                // Ожидание появление иконки подгрузки новых событий
-                wait.until(ExpectedConditions.visibilityOfElementLocated(loaderLocation));
-                // Ожидание исчезновение иконки подгрузки новых событий -> события загрузились
-                wait.until(ExpectedConditions.invisibilityOfElementLocated(loaderLocation));
-            } catch (Exception e) {
-                // Если иконка не появилась за 5 секунд, значит получили все события
-                logger.info("Пагинация событий прекратилась. Скролл остановился.");
-                break;
-            }
-        }
+
+            // Получаем новую высоту страницы
+            currentHeight = (long) js.executeScript("return document.body.scrollHeight");
+        } while (currentHeight > initialHeight); // Повторяем, пока высота страницы увеличивается
     }
 
-    public void clickEventsFilter(String filter) {
-        logger.info("Поиск дродауна с мероприятиями");
+    public void clickEventsFilter() {
+        logger.info("Поиск и нажатие на меню с фильтрами мероприятий");
         driver.findElement(eventsLocation).click();
 
-        logger.info("Поиск и выбор элемента - {}", filter);
+        logger.info("Нажатие на фильтр Открытый вебинар");
         driver.findElement(webinarItemLocation).click();
 
     }
 
-    public boolean checkCardsDate(List<WebElement> cards) {
+    public void checkCardsDate(List<WebElement> cards) {
         logger.info("Валидация карточек мероприятий по дате");
         for (WebElement card : cards) {
             String dateText = String.valueOf(card.findElement(eventDateLocation).getText());
-            if (!validateDate(dateText)) {
-                logger.error("Карточка не прошла валидацию по дате: {}", dateText);
-                return false;
-            }
+            validateDate(dateText);
         }
-        return true;
     }
 
-    public boolean checkCardsType(List<WebElement> cards, String inputType) {
+    public void checkCardsType(List<WebElement> cards, String inputType) {
         logger.info("Валидация карточек мероприятий по типу");
         for (WebElement card : cards) {
             String eventType = String.valueOf(card.findElement(eventTypeLocation).getText());
-            if (!Objects.equals(eventType, inputType)) {
-                logger.error("Карточка не прошла валидацию по типу: {}", inputType);
-                return false;
-            }
+            Assertions.assertEquals(eventType, inputType, "Карточка не прошла валидацию по типу.");
         }
-        return true;
     }
 
     public List<WebElement> getCards() {
         logger.info("Загрузка списка элементов с карточками мероприятий");
-        return driver.findElements(eventsArrayLocation);
+        List<WebElement> cards = driver.findElements(eventsArrayLocation);
+        Assertions.assertFalse(cards.isEmpty(), "Мероприятий нет.");
+        return cards;
     }
 
 

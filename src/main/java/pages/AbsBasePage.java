@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 
 public abstract class AbsBasePage {
     protected WebDriver driver;
+
     public static final Logger logger = LogManager.getLogger(AbsBasePage.class);
 
     public AbsBasePage(WebDriver driver){

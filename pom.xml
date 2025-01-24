@@ -12,6 +12,10 @@
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <browser>chrome</browser> <!-- По умолчанию браузер Chrome -->
+        <window.mode>maximize</window.mode> <!-- По умолчанию режим отображения maximize -->
+        <url>https://otus.ru/</url>
+
     </properties>
 
     <dependencies>

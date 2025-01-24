@@ -12,11 +12,12 @@ public class DriverFactory {
 
     public WebDriver getDriver() {
         String browserType = Utils.getBrowser();
+        String windowMode = Utils.getWindowMode().toLowerCase();
+
         switch (browserType.toLowerCase()) {
             case "chrome":
                 WebDriverManager.chromedriver().setup();
                 driver = new ChromeDriver();
-                driver.manage().window().maximize();
                 break;
 
             case "firefox":
@@ -32,6 +33,8 @@ public class DriverFactory {
             default:
                 throw new IllegalArgumentException("Неподдеживаемый браузер " + browserType);
         }
+        driver.manage().window().maximize();
+
         return driver;
     }
 }
